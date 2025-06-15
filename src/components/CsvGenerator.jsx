@@ -12,7 +12,7 @@ const CsvGenerator = () => {
         setFilePath('');
 
         try {
-            const response = await fetch("http://127.0.0.1:8000/csv_generator", {
+            const response = await fetch("https://flask-csv-generator-backend.vercel.app/csv_generator", {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -32,6 +32,19 @@ const CsvGenerator = () => {
             setLoading(false);
         }
     };
+
+    const handleDownload = () => {
+        const csvText = filePath;
+        const blob = new Blob([csvText], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+    
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "data.csv";
+        a.click();
+
+        URL.revokeObjectURL(url);
+      };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -62,14 +75,11 @@ const CsvGenerator = () => {
 
                 {filePath && !loading && (
                     <div className="mt-4 text-center">
-                        <a
-                            href={`http://127.0.0.1:8000/csv_provider?file_name=${filePath}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <button
                             className="text-blue-600 hover:underline"
-                        >
+                            onClick={handleDownload}>
                             Download File
-                        </a>
+                        </button>
                     </div>
                 )}
 
